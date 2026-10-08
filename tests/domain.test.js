@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{isAdult,requirements,allErrors,safeFile,csvCell,validate}from'../dist/domain.js';
+const today=new Date(2026,9,8);
+test('18th birthday boundary and invalid dates',()=>{assert.equal(isAdult('2008-10-08',today),true);assert.equal(isAdult('2008-10-09',today),false);assert.equal(isAdult('2008-02-31',today),false);assert.equal(isAdult('2030-01-01',today),false);assert.equal(isAdult('',today),false)});
+const a={channel:'Direct',firstName:'Test',lastName:'Student',email:'test@example.com',phone:'+91 9876543210',dob:'2000-01-01',country:'India',nationality:'Indian',address:'Test address',conviction:'no',programme:'BSc Computer Science',intake:'July',qualification:'Class XII',board:'Test board',year:'2024',grade:'80%',english:'no',experience:'no',sop:'no',declaration:true,privacy:true,marketing:false,docs:Object.fromEntries(['Passport','Academic certificates','Academic transcripts / mark sheets'].map(k=>[k,{id:k}]))};
+test('valid direct application accepts no marketing consent',()=>assert.deepEqual(allErrors(a),[]));
+test('required evidence cannot be skipped',()=>assert.equal(validate({...a,docs:{}},3).length,3));
+test('conditional documents are enforced',()=>{assert.equal(requirements({...a,english:'yes',experience:'yes',sop:'yes'}).length,7);assert.equal(validate({...a,english:'yes'},3).length,1)});
+test('programme and intake restricted to approved options',()=>assert.equal(validate({...a,programme:'MBA',intake:'January'},1).length,2));
+test('agency submission needs authority declaration',()=>assert.equal(validate({...a,channel:'B2B'},4).length,1));
+test('invalid email and unsupported country rejected',()=>assert.equal(validate({...a,email:'bad',country:'France'},0).length,2));
+test('file extension, type, empty and size restrictions',()=>{assert.equal(safeFile({name:'test.pdf',size:500,type:'application/pdf'}),true);for(const f of [{name:'a.exe',size:500,type:''},{name:'a.pdf',size:0,type:'application/pdf'},{name:'a.pdf',size:11*1024*1024,type:'application/pdf'}])assert.equal(safeFile(f),false)});
+test('CSV prevents formula injection and escapes quotes',()=>{assert.equal(csvCell('=SUM(1,2)'),'"\'=SUM(1,2)"');assert.equal(csvCell('a"b'),'"a""b"')});
