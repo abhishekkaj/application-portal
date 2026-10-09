@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/domain.test.js",
+    "test": "node --test tests/domain.test.js functions/test/policy.test.js",
     "start": "node server.mjs"
   },
   "author": "Abhishek Jha"

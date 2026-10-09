@@ -1,3 +1,7 @@
+## Firebase integration update
+
+Firebase authentication, backend functions, private document storage and SMTP email outbox are now included. Live mode remains disabled until project setup is complete. See [BACKEND-SETUP.md](BACKEND-SETUP.md). Agency registration, Google sign-in and phone OTP are available in the account screens when configured.
+
 # RCL Mumbai application portal — first implementation
 
 Scope follows the application questionnaire; the broader CRM SRS is context only. Intake months July and October were confirmed in chat. Intake years and deadlines remain unspecified.
